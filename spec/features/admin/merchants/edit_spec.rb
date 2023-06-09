@@ -2,15 +2,15 @@ require "rails_helper"
 
 describe "Admin Merchant Show" do
   before :each do
-    @m1 = Merchant.create!(name: "Merchant 1")
-    visit edit_admin_merchant_path(@m1)
+    @m_1 = Merchant.create!(name: "Merchant 1")
+    visit edit_admin_merchant_path(@m_1)
   end
 
   it "should have a form that redirects back to admin merchant show with a flash message" do
     fill_in "merchant[name]", with: "Dang Boiii"
     click_button
 
-    expect(current_path).to eq(admin_merchant_path(@m1))
+    expect(current_path).to eq(admin_merchant_path(@m_1))
     expect(page).to have_content("Dang Boiii")
     expect(page).to have_content("Merchant Has Been Updated!")
   end
@@ -20,7 +20,7 @@ describe "Admin Merchant Show" do
 
     click_button
 
-    expect(current_path).to eq(edit_admin_merchant_path(@m1))
+    expect(current_path).to eq(edit_admin_merchant_path(@m_1))
     expect(page).to have_content("All fields must be completed, get your act together.")
   end
 end

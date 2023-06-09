@@ -4549,7 +4549,7 @@ Style/NumberedParametersLimit:
 Style/NumericLiteralPrefix:
   Description: 'Use smallcase prefixes for numeric literals.'
   StyleGuide: '#numeric-literal-prefixes'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.41'
   EnforcedOctalStyle: zero_with_o
   SupportedOctalStyles:

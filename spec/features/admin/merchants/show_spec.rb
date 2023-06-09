@@ -2,12 +2,12 @@ require "rails_helper"
 
 describe "Admin Merchant Show" do
   before :each do
-    @m1 = Merchant.create!(name: "Merchant 1")
-    visit admin_merchant_path(@m1)
+    @m_1 = Merchant.create!(name: "Merchant 1")
+    visit admin_merchant_path(@m_1)
   end
 
   it "should have merchant name" do
-    expect(page).to have_content(@m1.name)
+    expect(page).to have_content(@m_1.name)
   end
 
   it "should have a link to update merchant" do
@@ -15,17 +15,17 @@ describe "Admin Merchant Show" do
 
     click_link "Update Merchant"
 
-    expect(current_path).to eq(edit_admin_merchant_path(@m1))
+    expect(current_path).to eq(edit_admin_merchant_path(@m_1))
   end
 
   it "should display updated information" do
-    visit edit_admin_merchant_path(@m1)
+    visit edit_admin_merchant_path(@m_1)
 
     fill_in "merchant[name]", with: "Dang Boiii"
 
     click_button
 
-    expect(current_path).to eq(admin_merchant_path(@m1))
+    expect(current_path).to eq(admin_merchant_path(@m_1))
     expect(page).to have_content("Dang Boiii")
   end
 end
