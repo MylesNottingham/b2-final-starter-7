@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe Transaction, type: :model do
   describe "validations" do
@@ -7,6 +7,6 @@ RSpec.describe Transaction, type: :model do
     it { should validate_presence_of :result }
   end
   describe "relationships" do
-    it { should belong_to :invoice }
+    it { should belong_to(:invoice) }
   end
 end

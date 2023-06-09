@@ -7,13 +7,9 @@ class ItemsController < ApplicationController
     @disabled_items = @merchant.disabled_items
   end
 
-  def show
+  def show; end
 
-  end
-
-  def edit
-
-  end
+  def edit; end
 
   def update
     if @item.update(item_params)
@@ -25,19 +21,20 @@ class ItemsController < ApplicationController
     end
   end
 
-  def new
-
-  end
+  def new; end
 
   def create
-    Item.create!(name: params[:name],
-                description: params[:description],
-                unit_price: params[:unit_price],
-                merchant: @merchant)
+    Item.create!(
+      name: params[:name],
+      description: params[:description],
+      unit_price: params[:unit_price],
+      merchant: @merchant
+    )
     redirect_to merchant_items_path(@merchant)
   end
 
   private
+
   def item_params
     params.require(:item).permit(:name, :description, :unit_price, :merchant_id)
   end
@@ -50,5 +47,4 @@ class ItemsController < ApplicationController
   def find_merchant
     @merchant = Merchant.find(params[:merchant_id])
   end
-
 end

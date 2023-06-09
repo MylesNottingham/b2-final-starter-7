@@ -4,19 +4,18 @@ class Admin::InvoicesController < ApplicationController
     @invoices = Invoice.all
   end
 
-  def show
-  end
+  def show; end
 
-  def edit
-  end
+  def edit; end
 
   def update
     @invoice.update(invoice_params)
-    flash.notice = 'Invoice Has Been Updated!'
+    flash.notice = "Invoice Has Been Updated!"
     redirect_to admin_invoice_path(@invoice)
   end
 
   private
+
   def set_invoice
     @invoice = Invoice.find(params[:id])
   end

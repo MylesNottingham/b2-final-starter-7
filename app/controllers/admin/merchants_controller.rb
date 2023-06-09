@@ -6,17 +6,15 @@ class Admin::MerchantsController < ApplicationController
     @disabled_merchants = Merchant.disabled
   end
 
-  def show
-  end
+  def show; end
 
   def create
     Merchant.create!(name: params[:name])
-    flash.notice = 'Merchant Has Been Created!'
+    flash.notice = "Merchant Has Been Created!"
     redirect_to admin_merchants_path
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if @merchant.update(merchant_params)
@@ -29,6 +27,7 @@ class Admin::MerchantsController < ApplicationController
   end
 
   private
+
   def set_merchant
     @merchant = Merchant.find(params[:id])
   end
@@ -36,5 +35,4 @@ class Admin::MerchantsController < ApplicationController
   def merchant_params
     params.require(:merchant).permit(:name)
   end
-
 end

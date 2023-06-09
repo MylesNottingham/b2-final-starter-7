@@ -2,9 +2,9 @@ require "rails_helper"
 
 describe "Admin Merchant New" do
   before :each do
-    @m1 = Merchant.create!(name: "Merchant 1")
+    @m_1 = Merchant.create!(name: "Merchant 1")
   end
-  
+
   it "should be able to fill in a form and create a new merchant" do
     visit new_admin_merchant_path
 
