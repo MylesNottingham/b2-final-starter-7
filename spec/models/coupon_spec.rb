@@ -135,7 +135,7 @@ RSpec.describe Coupon, type: :model do
       @invoice_6 = Invoice.create!(customer_id: @customer_5.id, status: 2)
       @invoice_7 = Invoice.create!(customer_id: @customer_6.id, status: 2)
 
-      @invoice_8 = Invoice.create!(customer_id: @customer_6.id, status: 2, coupon_id: @coupon_4.id)
+      @invoice_8 = Invoice.create!(customer_id: @customer_6.id, status: 1, coupon_id: @coupon_4.id)
 
       @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 9, unit_price: 10, status: 0)
       @ii_2 = InvoiceItem.create!(invoice_id: @invoice_2.id, item_id: @item_1.id, quantity: 1, unit_price: 10, status: 0)
@@ -159,6 +159,11 @@ RSpec.describe Coupon, type: :model do
 
     it "#times_used" do
       expect(@coupon_1.times_used).to eq(1)
+    end
+
+    it "#invoices_in_progress?" do
+      expect(@coupon_1.invoices_in_progress?).to eq(false)
+      expect(@coupon_4.invoices_in_progress?).to eq(true)
     end
   end
 end
