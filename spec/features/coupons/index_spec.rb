@@ -77,7 +77,7 @@ describe "merchant coupons index" do
       code: "TAKE10",
       value: 10,
       percent_not_dollar: false,
-      activation_status: true,
+      activation_status: false,
       merchant_id: @merchant_1.id
     )
     @coupon_4 = Coupon.create!(
@@ -123,7 +123,7 @@ describe "merchant coupons index" do
       visit merchant_coupons_path(@merchant_1)
     end
 
-    it "shows all coupon names including amount off" do
+    it "shows all coupon names including amount off in active and inactive columns" do
 
       within "#page-title" do
         expect(page).to have_content("My Coupons")
@@ -132,8 +132,16 @@ describe "merchant coupons index" do
       within "#active-coupons" do
         expect(page).to have_content("#{@coupon_1.name} - 10% off")
         expect(page).to have_content("#{@coupon_2.name} - 20% off")
+
+        expect(page).not_to have_content("#{@coupon_3.name} - $10 off")
+        expect(page).not_to have_content("#{@coupon_4.name} - $20 off")
+      end
+
+      within "#inactive-coupons" do
         expect(page).to have_content("#{@coupon_3.name} - $10 off")
 
+        expect(page).not_to have_content("#{@coupon_1.name} - 10% off")
+        expect(page).not_to have_content("#{@coupon_2.name} - 20% off")
         expect(page).not_to have_content("#{@coupon_4.name} - $20 off")
       end
     end
