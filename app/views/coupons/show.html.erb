@@ -5,11 +5,6 @@
     <p class='col-12'><%= @coupon.name %></p>
   </div>
 
-  <div id="coupon-status">
-    <strong>Status: </strong><%= @coupon.activation_status %>
-  </div>
-  <br>
-
   <div id="coupon-info">
     <p>Code: <%= @coupon.code %></p>
     <p>
@@ -18,5 +13,11 @@
       <% percent = "%" if @coupon.percent_not_dollar %>
       <%= "#{dollar}#{@coupon.value}#{percent} off" %>
     </p>
+  </div>
+  <br>
+
+  <div id="coupon-status">
+    <p><strong>Status: </strong><%= @coupon.activation_status %></p>
+    <p>Times Used: <%= @coupon.times_used %></p>
   </div>
 </body>
