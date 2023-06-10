@@ -26,14 +26,20 @@ class CouponsController < ApplicationController
   end
 
   def update
-    if @coupon.invoices_in_progress?
-      flash.notice = "Cannot deactivate coupon while invoices are in progress."
-    elsif @coupon.activation_status == "Active"
-      @coupon.update(activation_status: "Inactive")
-      flash.notice = "Coupon Has Been Deactivated!"
+    if @coupon.activation_status == "Active"
+      if @coupon.invoices_in_progress?
+        flash.notice = "Cannot deactivate coupon while invoices are in progress."
+      else
+        @coupon.update(activation_status: "Inactive")
+        flash.notice = "Coupon Has Been Deactivated!"
+      end
     else
-      @coupon.update(activation_status: "Active")
-      flash.notice = "Coupon Has Been Activated!"
+      if @merchant.number_of_active_coupons >= 5
+        flash.notice = "5 is the maximum number of active coupons allowed."
+      else
+        @coupon.update(activation_status: "Active")
+        flash.notice = "Coupon Has Been Activated!"
+      end
     end
 
     redirect_to merchant_coupon_path(@merchant, @coupon)
