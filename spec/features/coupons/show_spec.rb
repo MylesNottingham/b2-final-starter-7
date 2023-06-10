@@ -57,7 +57,7 @@ RSpec.describe "coupons show" do
     )
 
     @coupon_1 = Coupon.create!(
-      name: "Anniversary Sale - 10% off",
+      name: "Anniversary Sale",
       code: "ANIV10",
       value: 10,
       percent_not_dollar: true,
@@ -65,7 +65,7 @@ RSpec.describe "coupons show" do
       merchant_id: @merchant_1.id
     )
     @coupon_2 = Coupon.create!(
-      name: "Second Purchase - 20% off",
+      name: "Second Purchase",
       code: "LOYAL20",
       value: 20,
       percent_not_dollar: true,
@@ -73,7 +73,7 @@ RSpec.describe "coupons show" do
       merchant_id: @merchant_1.id
     )
     @coupon_3 = Coupon.create!(
-      name: "Oops - $10 off",
+      name: "Oops",
       code: "TAKE10",
       value: 10,
       percent_not_dollar: false,
@@ -81,7 +81,7 @@ RSpec.describe "coupons show" do
       merchant_id: @merchant_1.id
     )
     @coupon_4 = Coupon.create!(
-      name: "New Member - $20 off",
+      name: "New Member",
       code: "NEW20",
       value: 20,
       percent_not_dollar: false,

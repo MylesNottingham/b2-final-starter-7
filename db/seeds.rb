@@ -10,7 +10,7 @@ Coupon.destroy_all
 Rake::Task["csv_load:all"].invoke
 
 Coupon.create!(
-  name: "Anniversary Sale - 10% off",
+  name: "Anniversary Sale",
   code: "ANIV10",
   value: 10,
   percent_not_dollar: true,
@@ -18,7 +18,7 @@ Coupon.create!(
   merchant_id: 1
 )
 Coupon.create!(
-  name: "Second Purchase - 20% off",
+  name: "Second Purchase",
   code: "LOYAL20",
   value: 20,
   percent_not_dollar: true,
@@ -26,7 +26,7 @@ Coupon.create!(
   merchant_id: 1
 )
 Coupon.create!(
-  name: "Oops - $10 off",
+  name: "Oops",
   code: "TAKE10",
   value: 10,
   percent_not_dollar: false,
@@ -34,7 +34,7 @@ Coupon.create!(
   merchant_id: 1
 )
 Coupon.create!(
-  name: "New Member - $20 off",
+  name: "New Member",
   code: "NEW20",
   value: 20,
   percent_not_dollar: false,
