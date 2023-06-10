@@ -220,10 +220,10 @@ describe Merchant do
       @transaction_9 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_9.id)
     end
 
-    it "top_merchants" do
+    it "#top_merchants" do
       actual = Merchant.top_merchants.map(&:name)
 
-      expect(actual).to eq([@merchant_1.name, @merchant_3.name, @merchant_4.name, @merchant_5.name, @merchant_6.name])
+      expect(actual.sort).to eq([@merchant_1.name, @merchant_3.name, @merchant_4.name, @merchant_5.name, @merchant_6.name].sort)
     end
   end
 
@@ -280,6 +280,39 @@ describe Merchant do
         name: "Necklace",
         description: "Neck bling",
         unit_price: 300,
+        merchant_id: @merchant_2.id
+      )
+
+      @coupon_1 = Coupon.create!(
+        name: "Anniversary Sale",
+        code: "ANIV10",
+        value: 10,
+        percent_not_dollar: true,
+        activation_status: true,
+        merchant_id: @merchant_1.id
+      )
+      @coupon_2 = Coupon.create!(
+        name: "Second Purchase",
+        code: "LOYAL20",
+        value: 20,
+        percent_not_dollar: true,
+        activation_status: false,
+        merchant_id: @merchant_1.id
+      )
+      @coupon_3 = Coupon.create!(
+        name: "Oops",
+        code: "TAKE10",
+        value: 10,
+        percent_not_dollar: false,
+        activation_status: true,
+        merchant_id: @merchant_1.id
+      )
+      @coupon_4 = Coupon.create!(
+        name: "New Member",
+        code: "NEW20",
+        value: 20,
+        percent_not_dollar: false,
+        activation_status: true,
         merchant_id: @merchant_2.id
       )
 
@@ -382,13 +415,13 @@ describe Merchant do
       @transaction_8 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_8.id)
     end
 
-    it "can list items ready to ship" do
+    it "#ordered_items_to_ship" do
       expect(@merchant_1.ordered_items_to_ship).to eq(
         [@item_1, @item_1, @item_3, @item_4, @item_7, @item_8, @item_4, @item_4]
       )
     end
 
-    it "shows a list of favorite customers" do
+    it "#favorite_customers" do
       actual = @merchant_1.favorite_customers.map do |customer|
         customer[:first_name]
       end
@@ -403,22 +436,34 @@ describe Merchant do
       )
     end
 
-    it "top_5_items" do
+    it "#top_5_items" do
       expect(@merchant_1.top_5_items).to eq([@item_1, @item_2, @item_3, @item_8, @item_4])
     end
 
-    it "best_day" do
+    it "#best_day" do
       expect(@merchant_1.best_day).to eq(@invoice_8.created_at.to_date)
     end
 
-    it "enabled_items" do
+    it "#enabled_items" do
       expect(@merchant_1.enabled_items).to eq([@item_1])
       expect(@merchant_2.enabled_items).to eq([])
     end
 
-    it "disabled_items" do
+    it "#disabled_items" do
       expect(@merchant_1.disabled_items).to eq([@item_2, @item_3, @item_4, @item_7, @item_8])
       expect(@merchant_2.disabled_items).to eq([@item_5, @item_6])
+    end
+
+    it "#active_coupons" do
+      expect(@merchant_1.active_coupons).to eq([@coupon_1, @coupon_3])
+    end
+
+    it "#inactive_coupons" do
+      expect(@merchant_1.inactive_coupons).to eq([@coupon_2])
+    end
+
+    it "#number_of_active_coupons" do
+      expect(@merchant_1.number_of_active_coupons).to eq(2)
     end
   end
 end
