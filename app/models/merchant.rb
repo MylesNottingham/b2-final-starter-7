@@ -9,7 +9,7 @@ class Merchant < ApplicationRecord
 
   enum status: [:enabled, :disabled]
 
-  #class methods
+  # class methods
   def self.top_merchants
     joins(invoices: [:invoice_items, :transactions])
       .where("result = ?", 1)
@@ -19,7 +19,7 @@ class Merchant < ApplicationRecord
       .limit(5)
   end
 
-  #instance methods
+  # instance methods
   def ordered_items_to_ship
     item_ids = InvoiceItem.where("status = 0 OR status = 1").order(:created_at).pluck(:item_id)
     item_ids.map do |id|
