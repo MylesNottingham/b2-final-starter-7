@@ -116,6 +116,15 @@ RSpec.describe "coupons show" do
     @ii_8 = InvoiceItem.create!(invoice_id: @invoice_7.id, item_id: @item_8.id, quantity: 1, unit_price: 5, status: 1)
     @ii_9 = InvoiceItem.create!(invoice_id: @invoice_7.id, item_id: @item_4.id, quantity: 1, unit_price: 1, status: 1)
     @ii_10 = InvoiceItem.create!(invoice_id: @invoice_8.id, item_id: @item_5.id, quantity: 1, unit_price: 1, status: 1)
+
+    @transaction_1 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_1.id)
+    @transaction_2 = Transaction.create!(credit_card_number: 230948, result: 1, invoice_id: @invoice_2.id)
+    @transaction_3 = Transaction.create!(credit_card_number: 234092, result: 1, invoice_id: @invoice_3.id)
+    @transaction_4 = Transaction.create!(credit_card_number: 230429, result: 1, invoice_id: @invoice_4.id)
+    @transaction_5 = Transaction.create!(credit_card_number: 102938, result: 1, invoice_id: @invoice_5.id)
+    @transaction_6 = Transaction.create!(credit_card_number: 879799, result: 0, invoice_id: @invoice_6.id)
+    @transaction_7 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_7.id)
+    @transaction_8 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_8.id)
   end
 
   context "coupon 1 for merchant 1" do
@@ -136,6 +145,22 @@ RSpec.describe "coupons show" do
       within "#coupon-info" do
         expect(page).to have_content("Code: #{@coupon_1.code}")
         expect(page).to have_content("Value: #{dollar}#{@coupon_1.value}#{percent} off")
+      end
+    end
+
+    it "shows the number of times the coupon has been successfully used" do
+      visit merchant_coupon_path(@merchant_1, @coupon_1)
+
+      within "#coupon-status" do
+        expect(page).to have_content("Times Used: 1")
+      end
+
+      Invoice.create!(customer_id: @customer_2.id, status: 2, coupon_id: @coupon_1.id)
+
+      refresh
+
+      within "#coupon-status" do
+        expect(page).to have_content("Times Used: 2")
       end
     end
   end

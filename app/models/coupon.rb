@@ -7,4 +7,9 @@ class Coupon < ApplicationRecord
   has_many :invoices
 
   enum activation_status: {active: true, inactive: false}
+
+  # instance methods
+  def times_used
+    invoices.where("invoices.status = 2").count
+  end
 end
