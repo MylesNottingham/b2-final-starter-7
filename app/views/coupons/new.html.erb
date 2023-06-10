@@ -1,0 +1,15 @@
+<%= render partial: "shared/nav" %>
+
+<%= form_with model: @coupon, method: :post, url: merchant_coupons_path(@merchant), data: {turbo: false}, class: "coupon_form", local: true do |f| %>
+  <%= f.label :name, "Name:" %><br/>
+  <%= f.text_field :name %><br/>
+  <%= f.label :code, "Unique Code:" %><br/>
+  <%= f.text_field :code %><br/><br/>
+  <%= f.label :value, "Value:" %><br/>
+  <%= f.number_field :value, step: 1, min: 1 %><br/>
+  <%= f.label :percent_not_dollar, "Percent:" %>
+  <%= f.radio_button :percent_not_dollar, true, checked: true %>
+  <%= f.label :percent_not_dollar, "Dollar:" %>
+  <%= f.radio_button :percent_not_dollar, false %><br/><br/>
+  <%= f.submit "Create Coupon" %>
+<% end %>
