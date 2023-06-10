@@ -5,14 +5,43 @@
     <p class='col-12'>My Coupons</p>
   </div>
 
-  <section id="all-coupons">
-    <% @coupons.each do |coupon| %>
-      <p>
-        <%= link_to coupon.name.to_s, merchant_coupon_path(@merchant, coupon) %> -
-        <% dollar = "$" unless coupon.percent_not_dollar %>
-        <% percent = "%" if coupon.percent_not_dollar %>
-        <%= "#{dollar}#{coupon.value}#{percent} off" %>
-      </p>
-    <% end %>
-  </section>
+  <p id="create-coupon"><%= link_to "Create New Coupon", new_merchant_coupon_path(@merchant) %></p>
+
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="column-header">
+        <p>Active Coupons</p>
+      </div>
+      <ul id="active-coupons">
+        <% @merchant.active_coupons.each do |coupon| %>
+          <section id="coupon-<%= coupon.id %>">
+            <li>
+              <%= link_to coupon.name.to_s, merchant_coupon_path(@merchant, coupon) %> -
+              <% dollar = "$" unless coupon.percent_not_dollar %>
+              <% percent = "%" if coupon.percent_not_dollar %>
+              <%= "#{dollar}#{coupon.value}#{percent} off" %>
+            </li>
+          </section>
+        <% end %>
+      </ul>
+    </div>
+
+    <div class="col-sm-6">
+      <div class="column-header">
+        <p>Inactive Coupons</p>
+      </div>
+      <section id="inactive-coupons">
+        <% @merchant.inactive_coupons.each do |coupon| %>
+          <section id="coupon-<%= coupon.id %>">
+            <li>
+              <%= link_to coupon.name.to_s, merchant_coupon_path(@merchant, coupon) %> -
+              <% dollar = "$" unless coupon.percent_not_dollar %>
+              <% percent = "%" if coupon.percent_not_dollar %>
+              <%= "#{dollar}#{coupon.value}#{percent} off" %>
+            </li>
+          </section>
+        <% end %>
+      </section>
+    </div>
+  </div>
 </body>

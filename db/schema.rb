@@ -19,7 +19,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_09_003418) do
     t.string "code"
     t.integer "value"
     t.boolean "percent_not_dollar"
-    t.boolean "activation_status"
+    t.boolean "activation_status", default: true
     t.bigint "merchant_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

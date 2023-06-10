@@ -9,23 +9,36 @@ class Merchant < ApplicationRecord
 
   enum status: [:enabled, :disabled]
 
-  def favorite_customers
-    transactions.joins(invoice: :customer)
-                .where("result = ?", 1)
-                .where("invoices.status = ?", 2)
-                .select("customers.*, count('transactions.result') as top_result")
-                .group("customers.id")
-                .order(top_result: :desc)
-                .distinct
-                .limit(5)
+  #class methods
+  def self.top_merchants
+    joins(invoices: [:invoice_items, :transactions])
+      .where("result = ?", 1)
+      .select("merchants.*, sum(invoice_items.quantity * invoice_items.unit_price) AS total_revenue")
+      .group(:id)
+      .order("total_revenue DESC")
+      .limit(5)
   end
 
+  #instance methods
   def ordered_items_to_ship
     item_ids = InvoiceItem.where("status = 0 OR status = 1").order(:created_at).pluck(:item_id)
     item_ids.map do |id|
       Item.find(id)
     end
   end
+
+  def favorite_customers
+    transactions
+      .joins(invoice: :customer)
+      .where("result = ?", 1)
+      .where("invoices.status = ?", 2)
+      .select("customers.*, count('transactions.result') as top_result")
+      .group("customers.id")
+      .order(top_result: :desc)
+      .distinct
+      .limit(5)
+  end
+
 
   def top_5_items
     items
@@ -37,14 +50,6 @@ class Merchant < ApplicationRecord
       .limit(5)
   end
 
-  def self.top_merchants
-    joins(invoices: [:invoice_items, :transactions])
-      .where("result = ?", 1)
-      .select("merchants.*, sum(invoice_items.quantity * invoice_items.unit_price) AS total_revenue")
-      .group(:id)
-      .order("total_revenue DESC")
-      .limit(5)
-  end
 
   def best_day
     invoices
@@ -62,5 +67,17 @@ class Merchant < ApplicationRecord
 
   def disabled_items
     items.where(status: 0)
+  end
+
+  def active_coupons
+    coupons.where(activation_status: 1)
+  end
+
+  def inactive_coupons
+    coupons.where(activation_status: 0)
+  end
+
+  def number_of_active_coupons
+    active_coupons.count
   end
 end
