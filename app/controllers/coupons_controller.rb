@@ -1,5 +1,5 @@
 class CouponsController < ApplicationController
-  before_action :find_coupon_and_merchant, only: [:show]
+  before_action :find_coupon_and_merchant, only: [:show, :update]
   before_action :find_merchant, only: [:index, :new, :create]
 
   def index; end
@@ -23,6 +23,20 @@ class CouponsController < ApplicationController
         redirect_to new_merchant_coupon_path(@merchant)
       end
     end
+  end
+
+  def update
+    if @coupon.invoices_in_progress?
+      flash.notice = "Cannot deactivate coupon while invoices are in progress."
+    elsif @coupon.activation_status == "Active"
+      @coupon.update(activation_status: "Inactive")
+      flash.notice = "Coupon Has Been Deactivated!"
+    else
+      @coupon.update(activation_status: "Active")
+      flash.notice = "Coupon Has Been Activated!"
+    end
+
+    redirect_to merchant_coupon_path(@merchant, @coupon)
   end
 
   private
