@@ -7,9 +7,10 @@
 #   Character.create(name: "Luke", movie: movies.first)
 
 Coupon.destroy_all
+Invoice.destroy_all
 Rake::Task["csv_load:all"].invoke
 
-Coupon.create!(
+@coupon_1 = Coupon.create!(
   name: "Anniversary Sale",
   code: "ANIV10",
   value: 10,
@@ -17,7 +18,7 @@ Coupon.create!(
   activation_status: true,
   merchant_id: 1
 )
-Coupon.create!(
+@coupon_2 = Coupon.create!(
   name: "Second Purchase",
   code: "LOYAL20",
   value: 20,
@@ -25,7 +26,7 @@ Coupon.create!(
   activation_status: true,
   merchant_id: 1
 )
-Coupon.create!(
+@coupon_3 = Coupon.create!(
   name: "Oops",
   code: "TAKE10",
   value: 10,
@@ -33,11 +34,22 @@ Coupon.create!(
   activation_status: true,
   merchant_id: 1
 )
-Coupon.create!(
+@coupon_4 = Coupon.create!(
   name: "New Member",
   code: "NEW20",
   value: 20,
   percent_not_dollar: false,
   activation_status: true,
   merchant_id: 2
+)
+
+Invoice.create!(
+  status: 2,
+  customer_id: 1,
+  coupon_id: @coupon_1.id
+)
+Invoice.create!(
+  status: 1,
+  customer_id: 1,
+  coupon_id: @coupon_3.id
 )

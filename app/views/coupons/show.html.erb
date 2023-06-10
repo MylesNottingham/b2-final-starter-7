@@ -1,11 +1,11 @@
 <%= render partial: "shared/nav" %>
 
 <body>
-  <div class="row" id="coupon-name">
+  <div class="row" id="name">
     <p class='col-12'><%= @coupon.name %></p>
   </div>
 
-  <div id="coupon-info">
+  <div id="info">
     <p>Code: <%= @coupon.code %></p>
     <p>
       Value:
@@ -13,11 +13,17 @@
       <% percent = "%" if @coupon.percent_not_dollar %>
       <%= "#{dollar}#{@coupon.value}#{percent} off" %>
     </p>
+    <p>Times Used: <%= @coupon.times_used %></p>
   </div>
   <br>
 
-  <div id="coupon-status">
-    <p><strong>Status: </strong><%= @coupon.activation_status %></p>
-    <p>Times Used: <%= @coupon.times_used %></p>
+  <div id="status">
+    <p><strong>Status: <%= @coupon.activation_status %></strong></p>
+
+    <% if @coupon.activation_status == "Active" %>
+      <%= button_to "Deactivate", merchant_coupon_path(@merchant, @coupon), method: :patch %>
+    <% else %>
+      <%= button_to "Activate", merchant_coupon_path(@merchant, @coupon), method: :patch %>
+    <% end %>
   </div>
 </body>
