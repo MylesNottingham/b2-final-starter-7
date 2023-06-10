@@ -1,0 +1,18 @@
+<%= render partial: "shared/nav" %>
+
+<body>
+  <div class="row" id="page-title">
+    <p class='col-12'>My Coupons</p>
+  </div>
+
+  <section id="all-coupons">
+    <% @coupons.each do |coupon| %>
+      <p>
+        <%= link_to coupon.name.to_s, merchant_coupon_path(@merchant, coupon) %> -
+        <% dollar = "$" unless coupon.percent_not_dollar %>
+        <% percent = "%" if coupon.percent_not_dollar %>
+        <%= "#{dollar}#{coupon.value}#{percent} off" %>
+      </p>
+    <% end %>
+  </section>
+</body>
