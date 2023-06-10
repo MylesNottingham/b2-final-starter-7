@@ -77,7 +77,7 @@ RSpec.describe "coupons show" do
       code: "TAKE10",
       value: 10,
       percent_not_dollar: false,
-      activation_status: true,
+      activation_status: false,
       merchant_id: @merchant_1.id
     )
     @coupon_4 = Coupon.create!(
@@ -127,7 +127,7 @@ RSpec.describe "coupons show" do
     @transaction_8 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_8.id)
   end
 
-  context "coupon 1 for merchant 1" do
+  context "merchant 1" do
     it "shows the coupon information" do
       visit merchant_coupon_path(@merchant_1, @coupon_1)
 
@@ -183,9 +183,27 @@ RSpec.describe "coupons show" do
         expect(page).to have_content("Status: Inactive")
       end
     end
+
+    it "has a button that activates the coupon" do
+      visit merchant_coupon_path(@merchant_1, @coupon_3)
+
+      within "#status" do
+        expect(page).to have_content("Status: Inactive")
+        expect(page).to have_button("Activate")
+      end
+
+      click_button "Activate"
+
+      expect(current_path).to eq(merchant_coupon_path(@merchant_1, @coupon_3))
+      expect(page).to have_content("Coupon Has Been Activated!")
+
+      within "#status" do
+        expect(page).to have_content("Status: Active")
+      end
+    end
   end
 
-  context "coupon 4 for merchant 2" do
+  context "merchant 2" do
     it "shows the coupon information" do
       visit merchant_coupon_path(@merchant_2, @coupon_4)
 
@@ -224,6 +242,54 @@ RSpec.describe "coupons show" do
       within "#status" do
         expect(page).to have_content("Status: Active")
       end
+    end
+
+    it "will not activate a coupon if the merchant has 5 active coupons" do
+      Coupon.create!(
+        name: "Anniversary Sale 2",
+        code: "ANIV20",
+        value: 20,
+        percent_not_dollar: true,
+        merchant_id: @merchant_2.id
+      )
+      Coupon.create!(
+        name: "Anniversary Sale 3",
+        code: "ANIV30",
+        value: 30,
+        percent_not_dollar: false,
+        merchant_id: @merchant_2.id
+      )
+      Coupon.create!(
+        name: "Punk Summer Sale",
+        code: "SUM41",
+        value: 41,
+        percent_not_dollar: true,
+        merchant_id: @merchant_2.id
+      )
+      Coupon.create!(
+        name: "Going Out of Business Sale",
+        code: "GOOB",
+        value: 100,
+        percent_not_dollar: false,
+        merchant_id: @merchant_2.id
+      )
+      inactive_coupon = Coupon.create!(
+        name: "Bankruptcy Sale",
+        code: "BANKRUPT",
+        value: 99,
+        percent_not_dollar: true,
+        activation_status: false,
+        merchant_id: @merchant_2.id
+      )
+
+      expect(@merchant_2.number_of_active_coupons).to eq(5)
+
+      visit merchant_coupon_path(@merchant_2, inactive_coupon)
+
+      click_button "Activate"
+
+      expect(current_path).to eq(merchant_coupon_path(@merchant_2, inactive_coupon))
+      expect(page).to have_content("5 is the maximum number of active coupons allowed.")
     end
   end
 end
