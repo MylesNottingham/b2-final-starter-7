@@ -1,0 +1,22 @@
+<%= render partial: "shared/nav" %>
+
+<body>
+  <div class="row" id="coupon-name">
+    <p class='col-12'><%= @coupon.name %></p>
+  </div>
+
+  <div id="coupon-status">
+    <strong>Status: </strong><%= @coupon.activation_status %>
+  </div>
+  <br>
+
+  <div id="coupon-info">
+    <p>Code: <%= @coupon.code %></p>
+    <p>
+      Value:
+      <% dollar = "$" unless @coupon.percent_not_dollar %>
+      <% percent = "%" if @coupon.percent_not_dollar %>
+      <%= "#{dollar}#{@coupon.value}#{percent} off" %>
+    </p>
+  </div>
+</body>
