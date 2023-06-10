@@ -105,7 +105,7 @@ RSpec.describe "coupons show" do
     @invoice_6 = Invoice.create!(customer_id: @customer_5.id, status: 2)
     @invoice_7 = Invoice.create!(customer_id: @customer_6.id, status: 2)
 
-    @invoice_8 = Invoice.create!(customer_id: @customer_6.id, status: 2, coupon_id: @coupon_4.id)
+    @invoice_8 = Invoice.create!(customer_id: @customer_6.id, status: 1, coupon_id: @coupon_4.id)
 
     @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 9, unit_price: 10, status: 0)
     @ii_2 = InvoiceItem.create!(invoice_id: @invoice_2.id, item_id: @item_1.id, quantity: 1, unit_price: 10, status: 0)
@@ -134,24 +134,24 @@ RSpec.describe "coupons show" do
       dollar = "$" unless @coupon_1.percent_not_dollar
       percent = "%" if @coupon_1.percent_not_dollar
 
-      within "#coupon-name" do
+      within "#name" do
         expect(page).to have_content(@coupon_1.name)
       end
 
-      within "#coupon-status" do
-        expect(page).to have_content("Status: #{@coupon_1.activation_status}")
-      end
-
-      within "#coupon-info" do
+      within "#info" do
         expect(page).to have_content("Code: #{@coupon_1.code}")
         expect(page).to have_content("Value: #{dollar}#{@coupon_1.value}#{percent} off")
+      end
+
+      within "#status" do
+        expect(page).to have_content("Status: #{@coupon_1.activation_status}")
       end
     end
 
     it "shows the number of times the coupon has been successfully used" do
       visit merchant_coupon_path(@merchant_1, @coupon_1)
 
-      within "#coupon-status" do
+      within "#info" do
         expect(page).to have_content("Times Used: 1")
       end
 
@@ -159,8 +159,28 @@ RSpec.describe "coupons show" do
 
       refresh
 
-      within "#coupon-status" do
+      within "#info" do
         expect(page).to have_content("Times Used: 2")
+      end
+    end
+
+    it "has a button that deactivates the coupon" do
+      visit merchant_coupon_path(@merchant_1, @coupon_1)
+      expect(@invoice_3.coupon_id).to eq(@coupon_1.id)
+      expect(@invoice_3.status).to eq("completed")
+
+      within "#status" do
+        expect(page).to have_content("Status: Active")
+        expect(page).to have_button("Deactivate")
+      end
+
+      click_button "Deactivate"
+
+      expect(current_path).to eq(merchant_coupon_path(@merchant_1, @coupon_1))
+      expect(page).to have_content("Coupon Has Been Deactivated!")
+
+      within "#status" do
+        expect(page).to have_content("Status: Inactive")
       end
     end
   end
@@ -172,17 +192,37 @@ RSpec.describe "coupons show" do
       dollar = "$" unless @coupon_4.percent_not_dollar
       percent = "%" if @coupon_4.percent_not_dollar
 
-      within "#coupon-name" do
+      within "#name" do
         expect(page).to have_content(@coupon_4.name)
       end
 
-      within "#coupon-status" do
-        expect(page).to have_content("Status: #{@coupon_4.activation_status}")
-      end
-
-      within "#coupon-info" do
+      within "#info" do
         expect(page).to have_content("Code: #{@coupon_4.code}")
         expect(page).to have_content("Value: #{dollar}#{@coupon_4.value}#{percent} off")
+      end
+
+      within "#status" do
+        expect(page).to have_content("Status: #{@coupon_4.activation_status}")
+      end
+    end
+
+    it "will not deactivate a coupon that is on a pending invoice" do
+      visit merchant_coupon_path(@merchant_2, @coupon_4)
+      expect(@invoice_8.coupon_id).to eq(@coupon_4.id)
+      expect(@invoice_8.status).to eq("in_progress")
+
+      within "#status" do
+        expect(page).to have_content("Status: Active")
+        expect(page).to have_button("Deactivate")
+      end
+
+      click_button "Deactivate"
+
+      expect(current_path).to eq(merchant_coupon_path(@merchant_2, @coupon_4))
+      expect(page).to have_content("Cannot deactivate coupon while invoices are in progress.")
+
+      within "#status" do
+        expect(page).to have_content("Status: Active")
       end
     end
   end
