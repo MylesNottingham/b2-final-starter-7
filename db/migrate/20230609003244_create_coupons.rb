@@ -4,8 +4,8 @@ class CreateCoupons < ActiveRecord::Migration[7.0]
       t.string :name
       t.string :code
       t.integer :value
-      t.boolean :as_percent
-      t.boolean :active
+      t.boolean :percent_not_dollar
+      t.boolean :activation_status
       t.references :merchant, null: false, foreign_key: true
 
       t.timestamps
