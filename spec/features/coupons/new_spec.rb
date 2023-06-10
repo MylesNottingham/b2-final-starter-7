@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "merchant coupons index" do
+describe "new coupon page" do
   before :each do
     @merchant_1 = Merchant.create!(name: "Hair Care")
     @merchant_2 = Merchant.create!(name: "Jewelry")
@@ -118,46 +118,82 @@ describe "merchant coupons index" do
     @ii_10 = InvoiceItem.create!(invoice_id: @invoice_8.id, item_id: @item_5.id, quantity: 1, unit_price: 1, status: 1)
   end
 
-  context "for merchant 1" do
-    before :each do
-      visit merchant_coupons_path(@merchant_1)
-    end
+  it "should be able to fill in a form and create a new coupon" do
+    visit new_merchant_coupon_path(@merchant_1)
 
-    it "shows all coupon names including amount off" do
+    expect(page).to have_content("Name:")
+    expect(page).to have_content("Unique Code:")
+    expect(page).to have_content("Value:")
+    expect(page).to have_content("Percent:")
+    expect(page).to have_content("Dollar:")
+    expect(page).to have_button("Create Coupon")
 
-      within "#page-title" do
-        expect(page).to have_content("My Coupons")
-      end
+    fill_in :name, with: "Punk Summer Sale"
+    fill_in :code, with: "SUM41"
+    fill_in :value, with: 41
+    choose :percent_not_dollar_true
 
-      within "#active-coupons" do
-        expect(page).to have_content("#{@coupon_1.name} - 10% off")
-        expect(page).to have_content("#{@coupon_2.name} - 20% off")
-        expect(page).to have_content("#{@coupon_3.name} - $10 off")
+    click_button "Create Coupon"
 
-        expect(page).not_to have_content("#{@coupon_4.name} - $20 off")
-      end
-    end
+    expect(current_path).to eq(merchant_coupons_path(@merchant_1))
+  end
 
-    it "displays each coupon name as a link to the merchant coupon show page" do
-      expect(page).to have_link(@coupon_1.name)
-      expect(page).to have_link(@coupon_2.name)
-      expect(page).to have_link(@coupon_3.name)
+  it "should not be able to create a coupon if merchant already has five active coupons" do
+    visit new_merchant_coupon_path(@merchant_1)
 
-      expect(page).not_to have_link(@coupon_4.name)
+    Coupon.create!(
+      name: "Anniversary Sale 2",
+      code: "ANIV20",
+      value: 20,
+      percent_not_dollar: true,
+      merchant_id: @merchant_1.id
+    )
+    Coupon.create!(
+      name: "Anniversary Sale 3",
+      code: "ANIV30",
+      value: 30,
+      percent_not_dollar: false,
+      merchant_id: @merchant_1.id
+    )
 
-      click_link @coupon_1.name
+    expect(@merchant_1.number_of_active_coupons).to eq(5)
 
-      expect(current_path).to eq(merchant_coupon_path(@merchant_1, @coupon_1))
-    end
+    fill_in :name, with: "Punk Summer Sale"
+    fill_in :code, with: "SUM41"
+    fill_in :value, with: 41
+    choose :percent_not_dollar_true
 
-    it "shows a link to create a new coupon that redirects to form page" do
-      within "#create-coupon" do
-        expect(page).to have_link("Create New Coupon")
+    click_button "Create Coupon"
 
-        click_link "Create New Coupon"
+    expect(current_path).to eq(new_merchant_coupon_path(@merchant_1))
+    expect(page).to have_content("5 is the maximum number of active coupons allowed.")
+  end
 
-        expect(current_path).to eq(new_merchant_coupon_path(@merchant_1))
-      end
-    end
+  it "should not be able to create a coupon with a code that already exists with the same merchant" do
+    visit new_merchant_coupon_path(@merchant_1)
+
+    fill_in :name, with: "Anniversary Sale 2"
+    fill_in :code, with: "ANIV10"
+    fill_in :value, with: 10
+    choose :percent_not_dollar_false
+
+    click_button "Create Coupon"
+
+    expect(current_path).to eq(new_merchant_coupon_path(@merchant_1))
+    expect(page).to have_content("Code has already been taken")
+  end
+
+  it "should not be able to create a coupon with a code that already exists with a different merchant" do
+    visit new_merchant_coupon_path(@merchant_2)
+
+    fill_in :name, with: "Anniversary Sale 2"
+    fill_in :code, with: "ANIV10"
+    fill_in :value, with: 10
+    choose :percent_not_dollar_false
+
+    click_button "Create Coupon"
+
+    expect(current_path).to eq(new_merchant_coupon_path(@merchant_2))
+    expect(page).to have_content("Code has already been taken")
   end
 end
