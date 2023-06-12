@@ -9,8 +9,7 @@
     <p>Code: <%= @coupon.code %></p>
     <p>
       Value:
-      <% dollar = "$" unless @coupon.percent_not_dollar %>
-      <% percent = "%" if @coupon.percent_not_dollar %>
+      <% @coupon.percent_not_dollar ? percent = "%" : dollar = "$"%>
       <%= "#{dollar}#{@coupon.value}#{percent} off" %>
     </p>
     <p>Times Used: <%= @coupon.times_used %></p>

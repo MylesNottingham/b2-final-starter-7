@@ -124,25 +124,32 @@ describe "merchant coupons index" do
     end
 
     it "shows all coupon names including amount off in active and inactive columns" do
-
       within "#page-title" do
         expect(page).to have_content("My Coupons")
       end
 
       within "#active-coupons" do
-        expect(page).to have_content("#{@coupon_1.name} - 10% off")
-        expect(page).to have_content("#{@coupon_2.name} - 20% off")
+        @coupon_1.percent_not_dollar ? percent = "%" : dollar = "$"
+        expect(page).to have_content("#{@coupon_1.name} - #{dollar}#{@coupon_1.value}#{percent} off")
+        @coupon_2.percent_not_dollar ? percent = "%" : dollar = "$"
+        expect(page).to have_content("#{@coupon_2.name} - #{dollar}#{@coupon_2.value}#{percent} off")
 
-        expect(page).not_to have_content("#{@coupon_3.name} - $10 off")
-        expect(page).not_to have_content("#{@coupon_4.name} - $20 off")
+        @coupon_3.percent_not_dollar ? percent = "%" : dollar = "$"
+        expect(page).not_to have_content("#{@coupon_3.name} - #{dollar}#{@coupon_3.value}#{percent} off")
+        @coupon_4.percent_not_dollar ? percent = "%" : dollar = "$"
+        expect(page).not_to have_content("#{@coupon_4.name} - #{dollar}#{@coupon_4.value}#{percent} off")
       end
 
       within "#inactive-coupons" do
-        expect(page).to have_content("#{@coupon_3.name} - $10 off")
+        @coupon_3.percent_not_dollar ? percent = "%" : dollar = "$"
+        expect(page).to have_content("#{@coupon_3.name} - #{dollar}#{@coupon_3.value}#{percent} off")
 
-        expect(page).not_to have_content("#{@coupon_1.name} - 10% off")
-        expect(page).not_to have_content("#{@coupon_2.name} - 20% off")
-        expect(page).not_to have_content("#{@coupon_4.name} - $20 off")
+        @coupon_1.percent_not_dollar ? percent = "%" : dollar = "$"
+        expect(page).not_to have_content("#{@coupon_1.name} - #{dollar}#{@coupon_1.value}#{percent} off")
+        @coupon_2.percent_not_dollar ? percent = "%" : dollar = "$"
+        expect(page).not_to have_content("#{@coupon_2.name} - #{dollar}#{@coupon_2.value}#{percent} off")
+        @coupon_4.percent_not_dollar ? percent = "%" : dollar = "$"
+        expect(page).not_to have_content("#{@coupon_4.name} - #{dollar}#{@coupon_4.value}#{percent} off")
       end
     end
 
