@@ -17,8 +17,7 @@
           <section id="coupon-<%= coupon.id %>">
             <li>
               <%= link_to coupon.name.to_s, merchant_coupon_path(@merchant, coupon) %> -
-              <% dollar = "$" unless coupon.percent_not_dollar %>
-              <% percent = "%" if coupon.percent_not_dollar %>
+              <% coupon.percent_not_dollar ? percent = "%" : dollar = "$"%>
               <%= "#{dollar}#{coupon.value}#{percent} off" %>
             </li>
           </section>
@@ -35,8 +34,7 @@
           <section id="coupon-<%= coupon.id %>">
             <li>
               <%= link_to coupon.name.to_s, merchant_coupon_path(@merchant, coupon) %> -
-              <% dollar = "$" unless coupon.percent_not_dollar %>
-              <% percent = "%" if coupon.percent_not_dollar %>
+              <% coupon.percent_not_dollar ? percent = "%" : dollar = "$"%>
               <%= "#{dollar}#{coupon.value}#{percent} off" %>
             </li>
           </section>

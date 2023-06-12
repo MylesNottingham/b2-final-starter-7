@@ -131,8 +131,7 @@ RSpec.describe "coupons show" do
     it "shows the coupon information" do
       visit merchant_coupon_path(@merchant_1, @coupon_1)
 
-      dollar = "$" unless @coupon_1.percent_not_dollar
-      percent = "%" if @coupon_1.percent_not_dollar
+      @coupon_1.percent_not_dollar ? percent = "%" : dollar = "$"
 
       within "#name" do
         expect(page).to have_content(@coupon_1.name)
@@ -207,8 +206,7 @@ RSpec.describe "coupons show" do
     it "shows the coupon information" do
       visit merchant_coupon_path(@merchant_2, @coupon_4)
 
-      dollar = "$" unless @coupon_4.percent_not_dollar
-      percent = "%" if @coupon_4.percent_not_dollar
+      @coupon_4.percent_not_dollar ? percent = "%" : dollar = "$"
 
       within "#name" do
         expect(page).to have_content(@coupon_4.name)
