@@ -21,7 +21,7 @@
     <p>Discount: <%= @invoice.coupon.nil? ? "No Discount" : number_to_currency(@invoice.discount) %></p>
     <p><strong>Grand Total: <%= number_to_currency(@invoice.total_revenue_with_discount) %><strong></p>
   </div>
-  <br/>
+  <br>
 
   <div id="coupon-info">
     <% unless @invoice.coupon.nil? %>
