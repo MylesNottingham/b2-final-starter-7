@@ -17,7 +17,7 @@ Rake::Task["csv_load:all"].invoke
 # Transaction.destroy_all
 # Coupon.destroy_all
 
-# @merchant_1 = Merchant.create!(name: "Hair Care")
+# @merchant_1 = Merchant.create!(name: "Hair Care", status: 0)
 # @merchant_2 = Merchant.create!(name: "Jewelry")
 
 # @item_1 = Item.create!(
