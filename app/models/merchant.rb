@@ -39,7 +39,6 @@ class Merchant < ApplicationRecord
       .limit(5)
   end
 
-
   def top_5_items
     items
       .joins(invoices: :transactions)
@@ -49,7 +48,6 @@ class Merchant < ApplicationRecord
       .order("total_revenue desc")
       .limit(5)
   end
-
 
   def best_day
     invoices

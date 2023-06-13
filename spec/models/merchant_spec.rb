@@ -223,7 +223,15 @@ describe Merchant do
     it "#top_merchants" do
       actual = Merchant.top_merchants.map(&:name)
 
-      expect(actual.sort).to eq([@merchant_1.name, @merchant_3.name, @merchant_4.name, @merchant_5.name, @merchant_6.name].sort)
+      expect(actual.sort).to eq(
+        [
+          @merchant_1.name,
+          @merchant_3.name,
+          @merchant_4.name,
+          @merchant_5.name,
+          @merchant_6.name
+        ].sort
+      )
     end
   end
 
