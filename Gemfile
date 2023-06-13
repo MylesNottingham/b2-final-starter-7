@@ -55,6 +55,7 @@ group :development, :test do
   gem "capybara"
   gem "factory_bot_rails"
   gem "faker"
+  gem "httparty"
   gem "launchy"
   gem "orderly"
   gem "pry"

@@ -1,6 +1,16 @@
 <%= render partial: "shared/nav" %>
 
 <body>
+  <div id="holidays">
+    <h4>Upcoming US Holidays</h4>
+    <ul>
+      <% @holiday.each do |holiday| %>
+        <li><%= holiday[:date] %> - <%= holiday[:localName] %></li>
+      <% end %>
+    </ul>
+  </div>
+  <br>
+
   <div class="row" id="page-title">
     <p class='col-12'>My Coupons</p>
   </div>

@@ -2,7 +2,9 @@ class CouponsController < ApplicationController
   before_action :find_coupon_and_merchant, only: [:show, :update]
   before_action :find_merchant, only: [:index, :new, :create]
 
-  def index; end
+  def index
+    @holiday = HolidaySearch.new.next_three_us_holidays
+  end
 
   def show; end
 
