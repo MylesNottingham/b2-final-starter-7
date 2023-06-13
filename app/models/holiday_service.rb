@@ -1,5 +1,3 @@
-require "httparty"
-
 class HolidayService
   def upcoming_us_holidays
     get_url("https://date.nager.at/api/v3/NextPublicHolidays/US")
