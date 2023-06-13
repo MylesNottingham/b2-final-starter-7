@@ -35,13 +35,11 @@ class CouponsController < ApplicationController
         @coupon.update(activation_status: "Inactive")
         flash.notice = "Coupon Has Been Deactivated!"
       end
+    elsif @merchant.number_of_active_coupons >= 5
+      flash.notice = "5 is the maximum number of active coupons allowed."
     else
-      if @merchant.number_of_active_coupons >= 5
-        flash.notice = "5 is the maximum number of active coupons allowed."
-      else
-        @coupon.update(activation_status: "Active")
-        flash.notice = "Coupon Has Been Activated!"
-      end
+      @coupon.update(activation_status: "Active")
+      flash.notice = "Coupon Has Been Activated!"
     end
 
     redirect_to merchant_coupon_path(@merchant, @coupon)
