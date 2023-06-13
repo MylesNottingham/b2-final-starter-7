@@ -116,63 +116,73 @@ describe "merchant coupons index" do
     @ii_8 = InvoiceItem.create!(invoice_id: @invoice_7.id, item_id: @item_8.id, quantity: 1, unit_price: 5, status: 1)
     @ii_9 = InvoiceItem.create!(invoice_id: @invoice_7.id, item_id: @item_4.id, quantity: 1, unit_price: 1, status: 1)
     @ii_10 = InvoiceItem.create!(invoice_id: @invoice_8.id, item_id: @item_5.id, quantity: 1, unit_price: 1, status: 1)
+
+    visit merchant_coupons_path(@merchant_1)
   end
 
-  context "for merchant 1" do
-    before :each do
-      visit merchant_coupons_path(@merchant_1)
+  it "shows the next three upcoming US holidays" do
+    within "#holidays" do
+      next_three_us_holidays = HolidaySearch.new.next_three_us_holidays
+
+      expect(page).to have_content("Upcoming US Holidays")
+      expect(page).to have_content(next_three_us_holidays[0][:localName])
+      expect(page).to have_content(next_three_us_holidays[0][:date])
+      expect(page).to have_content(next_three_us_holidays[1][:localName])
+      expect(page).to have_content(next_three_us_holidays[1][:date])
+      expect(page).to have_content(next_three_us_holidays[2][:localName])
+      expect(page).to have_content(next_three_us_holidays[2][:date])
+    end
+  end
+
+  it "shows all coupon names including amount off in active and inactive columns" do
+    within "#page-title" do
+      expect(page).to have_content("My Coupons")
     end
 
-    it "shows all coupon names including amount off in active and inactive columns" do
-      within "#page-title" do
-        expect(page).to have_content("My Coupons")
-      end
+    within "#active-coupons" do
+      @coupon_1.percent_not_dollar ? percent = "%" : dollar = "$"
+      expect(page).to have_content("#{@coupon_1.name} - #{dollar}#{@coupon_1.value}#{percent} off")
+      @coupon_2.percent_not_dollar ? percent = "%" : dollar = "$"
+      expect(page).to have_content("#{@coupon_2.name} - #{dollar}#{@coupon_2.value}#{percent} off")
 
-      within "#active-coupons" do
-        @coupon_1.percent_not_dollar ? percent = "%" : dollar = "$"
-        expect(page).to have_content("#{@coupon_1.name} - #{dollar}#{@coupon_1.value}#{percent} off")
-        @coupon_2.percent_not_dollar ? percent = "%" : dollar = "$"
-        expect(page).to have_content("#{@coupon_2.name} - #{dollar}#{@coupon_2.value}#{percent} off")
-
-        @coupon_3.percent_not_dollar ? percent = "%" : dollar = "$"
-        expect(page).not_to have_content("#{@coupon_3.name} - #{dollar}#{@coupon_3.value}#{percent} off")
-        @coupon_4.percent_not_dollar ? percent = "%" : dollar = "$"
-        expect(page).not_to have_content("#{@coupon_4.name} - #{dollar}#{@coupon_4.value}#{percent} off")
-      end
-
-      within "#inactive-coupons" do
-        @coupon_3.percent_not_dollar ? percent = "%" : dollar = "$"
-        expect(page).to have_content("#{@coupon_3.name} - #{dollar}#{@coupon_3.value}#{percent} off")
-
-        @coupon_1.percent_not_dollar ? percent = "%" : dollar = "$"
-        expect(page).not_to have_content("#{@coupon_1.name} - #{dollar}#{@coupon_1.value}#{percent} off")
-        @coupon_2.percent_not_dollar ? percent = "%" : dollar = "$"
-        expect(page).not_to have_content("#{@coupon_2.name} - #{dollar}#{@coupon_2.value}#{percent} off")
-        @coupon_4.percent_not_dollar ? percent = "%" : dollar = "$"
-        expect(page).not_to have_content("#{@coupon_4.name} - #{dollar}#{@coupon_4.value}#{percent} off")
-      end
+      @coupon_3.percent_not_dollar ? percent = "%" : dollar = "$"
+      expect(page).not_to have_content("#{@coupon_3.name} - #{dollar}#{@coupon_3.value}#{percent} off")
+      @coupon_4.percent_not_dollar ? percent = "%" : dollar = "$"
+      expect(page).not_to have_content("#{@coupon_4.name} - #{dollar}#{@coupon_4.value}#{percent} off")
     end
 
-    it "displays each coupon name as a link to the merchant coupon show page" do
-      expect(page).to have_link(@coupon_1.name)
-      expect(page).to have_link(@coupon_2.name)
-      expect(page).to have_link(@coupon_3.name)
+    within "#inactive-coupons" do
+      @coupon_3.percent_not_dollar ? percent = "%" : dollar = "$"
+      expect(page).to have_content("#{@coupon_3.name} - #{dollar}#{@coupon_3.value}#{percent} off")
 
-      expect(page).not_to have_link(@coupon_4.name)
-
-      click_link @coupon_1.name
-
-      expect(current_path).to eq(merchant_coupon_path(@merchant_1, @coupon_1))
+      @coupon_1.percent_not_dollar ? percent = "%" : dollar = "$"
+      expect(page).not_to have_content("#{@coupon_1.name} - #{dollar}#{@coupon_1.value}#{percent} off")
+      @coupon_2.percent_not_dollar ? percent = "%" : dollar = "$"
+      expect(page).not_to have_content("#{@coupon_2.name} - #{dollar}#{@coupon_2.value}#{percent} off")
+      @coupon_4.percent_not_dollar ? percent = "%" : dollar = "$"
+      expect(page).not_to have_content("#{@coupon_4.name} - #{dollar}#{@coupon_4.value}#{percent} off")
     end
+  end
 
-    it "shows a link to create a new coupon that redirects to form page" do
-      within "#create-coupon" do
-        expect(page).to have_link("Create New Coupon")
+  it "displays each coupon name as a link to the merchant coupon show page" do
+    expect(page).to have_link(@coupon_1.name)
+    expect(page).to have_link(@coupon_2.name)
+    expect(page).to have_link(@coupon_3.name)
 
-        click_link "Create New Coupon"
+    expect(page).not_to have_link(@coupon_4.name)
 
-        expect(current_path).to eq(new_merchant_coupon_path(@merchant_1))
-      end
+    click_link @coupon_1.name
+
+    expect(current_path).to eq(merchant_coupon_path(@merchant_1, @coupon_1))
+  end
+
+  it "shows a link to create a new coupon that redirects to form page" do
+    within "#create-coupon" do
+      expect(page).to have_link("Create New Coupon")
+
+      click_link "Create New Coupon"
+
+      expect(current_path).to eq(new_merchant_coupon_path(@merchant_1))
     end
   end
 end
